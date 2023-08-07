@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import styles from "./page.module.css";
 import useSWR from "swr";
+import { useSession } from "next-auth/react";
 
 const Dashboard = () => {
   // const [data, setData] = useState([]);
@@ -27,6 +28,11 @@ const Dashboard = () => {
 
   //   getData();
   // }, []);
+
+  const session = useSession();
+  console.log(session);
+
+  // using SWR instead of useEffect and useState is much easier and cleaner
 
   const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
