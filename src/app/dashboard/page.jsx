@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import styles from "./page.module.css";
 import useSWR from "swr";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
   // const [data, setData] = useState([]);
@@ -29,9 +30,6 @@ const Dashboard = () => {
   //   getData();
   // }, []);
 
-  const session = useSession();
-  console.log(session);
-
   // using SWR instead of useEffect and useState is much easier and cleaner
 
   const fetcher = (...args) => fetch(...args).then((res) => res.json());
@@ -41,7 +39,22 @@ const Dashboard = () => {
     fetcher
   );
 
-  return <div className={styles.container}>Dashboard</div>;
+  const session = useSession();
+  const router = useRouter();
+
+  if (session.status === "loading") {
+    return <p>Loading...</p>;
+  }
+
+  if (session.status === "unauthenticated") {
+    router?.push("/dashboard/login");
+  }
+
+  console.log(session);
+
+  if (session.status === "authenticated") {
+    return <div className={styles.container}>Dashboard</div>;
+  }
 };
 
 export default Dashboard;
